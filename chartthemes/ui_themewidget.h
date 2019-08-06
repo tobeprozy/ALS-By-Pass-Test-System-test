@@ -66,28 +66,27 @@ public:
 		
 		if (ThemeWidgetForm->objectName().isEmpty())
 			ThemeWidgetForm->setObjectName(QString::fromUtf8("ThemeWidgetForm"));
-		ThemeWidgetForm->resize(900, 600);
+		ThemeWidgetForm->resize(900, 600);//初始化窗口完成
 
-		gridLayout = new QGridLayout(ThemeWidgetForm);
-		gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
+		gridLayout = new QGridLayout(ThemeWidgetForm);//定义QGridLayout
+		gridLayout->setObjectName(QString::fromUtf8("gridLayout"));//对QGridLayout命名
 	
-		horizontalLayout = new QHBoxLayout();
-		horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
+		horizontalLayout = new QHBoxLayout();//定义一个水平布置
+		horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));//定义该水平布置名称
 	
-		QVLayout = new QVBoxLayout(ThemeWidgetForm);
-		System_name = new QLineEdit("ALS Test By Pass Monitor System");
+		QVLayout = new QVBoxLayout(ThemeWidgetForm);//定义垂直布置
+		System_name = new QLineEdit("ALS Test By Pass Monitor System");//定义LineEdit，并命名为...
 
 	//	System_name->setStyleSheet("color:red");//文本颜色
-		System_name->setStyleSheet("background-color: rgb(5,94,133);border-style:outset");//背景色
-		System_name->setAlignment(Qt::AlignCenter);
+		System_name->setStyleSheet("background-color: rgb(5,94,133);border-style:outset");//设置System_name的背景色
+		System_name->setAlignment(Qt::AlignCenter);//设置System_name居中
 		System_name->setMaximumHeight(80);
-		System_name->setMinimumHeight(80);
+		System_name->setMinimumHeight(80);//设置System_name的背景色
 
 	
-		ft.setPointSize(26);
-		System_name->setFont(ft);
-	//	Label1->setContentsMargins(30, 0, 0, 0);
-		ft.setPointSize(20);
+		ft.setPointSize(26);//设置字体大小
+		System_name->setFont(ft);//设置System_name字体大小
+		
 
 		horizontalLayout3 = new QHBoxLayout();
 		alsName = new QLabel("Model:");
@@ -113,10 +112,6 @@ public:
 		
 			QVLayoutok1 = new QVBoxLayout(ThemeWidgetForm);
 			Labelok1 = new QPushButton(QString::fromLocal8Bit("OK"));
-		//	palette.setColor(QPalette::Background, QColor(0, 255, 0));
-		//	Labelok1->setAutoFillBackground(true);  //一定要这句，否则不行
-		//	Labelok1->setPalette(palette);
-		//	Labelok1->setFont(ft);
 			Labelok1->setStyleSheet("background: rgb(0,255,0)");
 			Labelok1->setMaximumSize(60,60);
 			Labelok1->setMinimumSize(60, 60);
@@ -140,10 +135,6 @@ public:
 
 			QVLayoutok2 = new QVBoxLayout(ThemeWidgetForm);
 			Labelok2 = new QPushButton(QString::fromLocal8Bit("OK"));
-			//palette.setColor(QPalette::Background, QColor(0, 255, 0));
-			//Labelok2->setAutoFillBackground(true);  //一定要这句，否则不行
-			//Labelok2->setPalette(palette);
-			//Labelok2->setFont(ft);
 			Labelok2->setStyleSheet("background: rgb(0,255,0)");
 			Labelok2->setMaximumSize(60, 60);
 			Labelok2->setMinimumSize(60, 60);
@@ -163,14 +154,8 @@ public:
 			QVLayoutok2->addWidget(Labelok2, 0, Qt::AlignHCenter);
 			QVLayoutok2->addWidget(Labelokdown2, 0, Qt::AlignHCenter);
 
-
-
 			QVLayoutok3 = new QVBoxLayout(ThemeWidgetForm);
 			Labelok3 = new QPushButton(QString::fromLocal8Bit("OK"));
-			//palette.setColor(QPalette::Background, QColor(0, 255, 0));
-			//Labelok4->setAutoFillBackground(true);  //一定要这句，否则不行
-			//Labelok4->setPalette(palette);
-			//Labelok4->setFont(ft);
 			Labelok3->setStyleSheet("background: rgb(0,255,0)");
 			Labelok3->setMaximumSize(60, 60);
 			Labelok3->setMinimumSize(60, 60);
@@ -180,7 +165,6 @@ public:
 			QString s3 = QString::number(i3);//数字转字符串
 			Labelokdown3 = new QLabel("NG QTY:" + s3 + "pcs");
 
-			//QLabel* Labelok1down4 = new QLabel(QString::fromLocal8Bit("NG Yield:0.80%"));
 			ft.setPointSize(16);
 			Labelok3->setFont(ft);
 			ft.setPointSize(14);
@@ -192,14 +176,8 @@ public:
 			QVLayoutok3->addWidget(Labelokdown3, 0, Qt::AlignHCenter);
 
 
-
-
 			QVLayoutok4 = new QVBoxLayout(ThemeWidgetForm);
 			Labelok4 = new QPushButton(QString::fromLocal8Bit("OK"));
-			//palette.setColor(QPalette::Background, QColor(0, 255, 0));
-			//Labelok4->setAutoFillBackground(true);  //一定要这句，否则不行
-			//Labelok4->setPalette(palette);
-			//Labelok4->setFont(ft);
 			Labelok4->setStyleSheet("background: rgb(0,255,0)");
 			Labelok4->setMaximumSize(60, 60);
 			Labelok4->setMinimumSize(60, 60);
@@ -209,7 +187,6 @@ public:
 			QString s4 = QString::number(i4);//数字转字符串
 			Labelokdown4= new QLabel("NG Yield:" + s4 + "%");
 
-			//QLabel* Labelok1down4 = new QLabel(QString::fromLocal8Bit("NG Yield:0.80%"));
 			ft.setPointSize(16);
 			Labelok4->setFont(ft);
 			ft.setPointSize(14);
@@ -222,10 +199,6 @@ public:
 
 			QVLayoutok5 = new QVBoxLayout(ThemeWidgetForm);
 			Labelok5 = new QPushButton(QString::fromLocal8Bit("OK"));
-			//palette.setColor(QPalette::Background, QColor(0, 255, 0));
-			//Labelok5->setAutoFillBackground(true);  //一定要这句，否则不行
-			//Labelok5->setPalette(palette);
-			//Labelok5->setFont(ft);
 			Labelok5->setStyleSheet("background: rgb(0,255,0)");
 			Labelok5->setMaximumSize(60, 60);
 			Labelok5->setMinimumSize(60, 60);
@@ -234,7 +207,6 @@ public:
 			double i5 = i2 / i1;
 			QString s5 = QString::number(i5);//数字转字符串
 			Labelokdown5 = new QLabel("Total Yield:" + s5 + "%");
-			//QLabel* Labelok1down5 = new QLabel(QString::fromLocal8Bit("Total Yield:99.20%"));
 			ft.setPointSize(16);
 			Labelok5->setFont(ft);
 			ft.setPointSize(14);
@@ -253,15 +225,8 @@ public:
 			horizontalLayout3->addLayout(QVLayoutok5);
 			
 		    QHBoxLayout* QHLayoutsign = new QHBoxLayout(ThemeWidgetForm);
-		 
-			//QVBoxLayout* QVLayoutsign = new QVBoxLayout(ThemeWidgetForm);
 			
 			Labelokng_color = new QPushButton(QString::fromLocal8Bit("OK"));
-			//	palette.setColor(QPalette::Background, QColor(0, 255, 0));
-			//	Labelok1->setAutoFillBackground(true);  //一定要这句，否则不行
-			//	Labelok1->setPalette(palette);
-			//	Labelok1->setFont(ft);
-		
 			Labelokng_color->setStyleSheet("background: rgb(0,255,0)");
 			
 			Labelokng_color->setMaximumSize(60, 60);
@@ -278,26 +243,8 @@ public:
 			QHLayoutsign->addWidget(Labelokng_color );
 			QHLayoutsign->addStretch(1);
 
-
 			QPushButton* call_sign = new QPushButton(QString::fromLocal8Bit("警报"));
-			////	palette.setColor(QPalette::Background, QColor(0, 255, 0));
-			////	Labelok1->setAutoFillBackground(true);  //一定要这句，否则不行
-			////	Labelok1->setPalette(palette);
-			////	Labelok1->setFont(ft);
-			//call_sign->setIcon(QIcon(":/Resources/alarm.jpg"));
-		 	//call_sign->setIconSize(QSize(48, 48));
-		    //QDir::setCurrent(QCoreApplication::applicationDirPath());
-			//call_sign->setStyleSheet(QObject::tr("background-image: url(:alarm.jpg)"));
 			call_sign->setStyleSheet("background: rgb(255,0,0)");
-			//int aaa = 1;
-			//if(aaa==2)
-			//{
-			//	call_sign->setStyleSheet("background: rgb(0,255,0)");
-			//}
-			//else
-			//{
-			//	call_sign->setStyleSheet("background: rgb(255,0,0)");
-			//}
 
 		    //警报设计
 			call_sign->setMaximumSize(60, 60);
@@ -343,27 +290,19 @@ public:
 			horizontalLayout->addWidget(antialiasCheckBox, 0, Qt::AlignLeft);
 	
 			
+			QVLayout->addWidget(System_name);
+			horizontalLayout->addStretch(1);
+			QVLayout->addLayout(horizontalLayout, Qt::AlignRight);
+			QVLayout->addLayout(horizontalLayoutname);
+			QVLayout->addLayout(horizontalLayout3); 
+			QVLayout->addLayout(QHLayoutsign);
 
-		
-		QVLayout->addWidget(System_name);
-		horizontalLayout->addStretch(1);
-		QVLayout->addLayout(horizontalLayout, Qt::AlignRight);
-		QVLayout->addLayout(horizontalLayoutname);
-		QVLayout->addLayout(horizontalLayout3); 
-		QVLayout->addLayout(QHLayoutsign);
-		//horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+			gridLayout->addLayout(QVLayout, 0, 0, 2, 4);
 
-		//horizontalLayout->addItem(QVLayout);
-		//gridLayout->addLayout(horizontalLayout, 0, 0, 1, 3);
-		gridLayout->addLayout(QVLayout, 0, 0, 2, 4);
-    	//	gridLayout->addLayout(QVLayout, 0, 0, 2, 3);
+			retranslateUi(ThemeWidgetForm);
+			listconnect(ThemeWidgetForm);
 
-		static int bb;
-		retranslateUi(ThemeWidgetForm);
-		listconnect(ThemeWidgetForm);
-
-} // setupUi
-
+} 
 void listconnect(QWidget* ThemeWidgetForm)
 	{
 		
@@ -373,7 +312,7 @@ void listconnect(QWidget* ThemeWidgetForm)
 	QObject::connect(animatedComboBox, SIGNAL(currentIndexChanged(int)), ThemeWidgetForm, SLOT(updateUI()));
 	QObject::connect(name_enter, SIGNAL(clicked()), ThemeWidgetForm, SLOT(editlock()));
 	QObject::connect(name_quit, SIGNAL(clicked()), ThemeWidgetForm, SLOT(editunlock()));
-     //setReadOnly(false)
+    //setReadOnly(false)
 	//qDebug("nihao%d",bb++);
 	QMetaObject::connectSlotsByName(ThemeWidgetForm);
 	}

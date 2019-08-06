@@ -1,11 +1,8 @@
 
 #include "chartthemes.h"
 #include "ui_themewidget.h"
-#include <QtWidgets/QHBoxLayout>
 #include <QtCharts/QChartView>
 #include <QtCharts/QPieSeries>
-#include <QtCharts/QPieSlice>
-#include <QtCharts/QAbstractBarSeries>
 #include <QtCharts/QPercentBarSeries>
 #include <QtCharts/QStackedBarSeries>
 #include <QtCharts/QBarSeries>
@@ -35,88 +32,70 @@
 
 
 
-int CountWeek(int year, int month, int day);
-int CountDay(int year, int month, int day);
-short length = 0;
-void positon_Excel(short row, short colum, short xx[6]);
-void writeExcel(short row, short colum, char str[20]);
-short readExcel(short colum);
-void time1();
-void Arrays(int num, int label[]);
-void systime();
-int Array_length;
+
+
+void positon_Excel(short row, short colum, short xx[6]);//将处理后的数据存入excel
+short readExcel(short colum);//读取excel数据
+void Arrays(int num, int label[]);//生成动态数组
+int* ok; //动态数组全局变量
+void systime();//读取系统时间
+int Array_length;//记录label长度
+int date[12] = { 31,28,31,30,31,30,31,31,30,31,30,31 };//月份的天数
+int CountWeek(int year, int month, int day);//计算目前是当年的第几周
+int CountDay(int year, int month, int day);//计算目前是当年的第几天
 
 char writeweek2[20];
 char writeweek3[20];
 char writeweek4[20];
-char writeweek1[20];
+char writeweek1[20];//记录当前是该年第几周
 
-int date[12] = { 31,28,31,30,31,30,31,31,30,31,30,31 };
-int* ok;
-int endsign=1;
 char* systimeA;//系统时间存储函数.法2
 char* systimeB;//系统时间存储函数
-char* systimeC;//系统时间存储函数
-//char systimeA[24]={0};//系统时间存储函数.法2
-//char systimeB[24] = { 0 };//系统时间存储函数
 char systemBB[20];
 char systemAA[20];
-static char systemCC[20];
 
-char* systimeAB;
-short m = 0;
-int isok[6];
-short isok_sign[6] = { 0,1,1,1,1,0 };
-short y5 = 0;
+short m = 0;//过程标志位
+int isok[6];//记录识别到的动作次数
+short isok_sign[6] = { 0,1,1,1,1,0 };//随便设置了初始完成情况，前五个代表动作，最后一个代表整体完成情况
+short y5 = 0;//记录第五个动作清空
 
-//产率
+//产值情况
 static int total = 0;
 static int oktotal = 0;
+int week1[4] = {0,0,0,0};
+int week2[4] = { 0,0,0,0 };
+int day1[7] = { 0,0,0,0,0,0,0 };
+int day2[7] = { 0,0,0,0,0,0,0 };
+int month1[4] = { 0,0,0,0 };
+int month2[4] = { 0,0,0,0 };
 
-int week1[4] = { 0};
-int week2[4] = { 0 };
-int day1[7] = { 0};
-int day2[7] = { 0};
-
-int month1[4] = {0};
-int month2[4] = {0};
-
+//读取excel的标志
+int endsign = 1;
 short daysign = 8;
 short weeksign = 8;
 short monthsign = 8;
-//A::B,其中::表示做作用域，B属于A。
 
-//A::B::C 等价于A.B.C
-static int abc = 1;
+//记录时间
 char* dayt1, * dayt2, * dayt3, * dayt4, * dayt5, * dayt6,*  dayt7;
 char dayt1s[10],  dayt2s[10], dayt3s[10], dayt4s[10], dayt5s[10], dayt6s[10], dayt7s[10];
-
 char* weekt1, * weekt2, * weekt3, * weekt4;
 char weekt1s[10], weekt2s[10], weekt3s[10], weekt4s[10];
-
 char* montht1, * montht2, * montht3, * montht4;
 char montht1s[10], montht2s[10], montht3s[10], montht4s[10];
 
-
+//A::B,其中::表示做作用域，B属于A。
+//A::B::C 等价于A.B.C
 ThemeWidget::ThemeWidget(QWidget* parent) :
 	QWidget(parent),
 	m_listCount(3),//显示几组数据
 	m_valueMax(10),
 	m_valueCount(7),//表示m_valueCount=7;七列数据
-//generateRandomData返回一张表单，二位数组，m_dataTable=表单
 	m_dataTable(generateRandomData(m_listCount, m_valueMax, m_valueCount)),
 	m_ui(new Ui_ThemeWidgetForm)
-
 {
+	//generateRandomData返回一张表单，二位数组，m_dataTable=表单
 	m_ui->setupUi(this);
-
 	systime();
-	positon_Excel(1, 1, isok_sign);
-	qDebug("dayt7s:%s", dayt7s);
-	//memset(systimeB, 0, sizeof systimeB);
-	qDebug("systemBB:%s", systemBB);
-	//printf("Array_length=%d", Array_length);
-//printf("%d\n%d\n%d\n%d\n", ok[0], ok[1], ok[3], ok[4]);
 	short x[5];
 	short isdone = 0;
 	short sign = 0;
@@ -132,12 +111,7 @@ ThemeWidget::ThemeWidget(QWidget* parent) :
 		{
 			break;
 		}
-
-		//不能用switch
-		//qDebug("sign_r:%d", sign_r);
 		total = total + 1;
-		//qDebug("total:%d", total);
-
 		qDebug("daysign:%d", daysign);
 		qDebug("monthsign:%d", monthsign);
 		qDebug("weeksign:%d", weeksign);
@@ -287,72 +261,58 @@ ThemeWidget::ThemeWidget(QWidget* parent) :
 		qDebug("day2[6]:%d", day2[6]);
 		qDebug("endsign:%d", endsign);
 
-
-	
-
-	 
-
+	//初始化主题空间
 	 populateThemeBox();
 	 populateAnimationBox();
 	 populateLegendBox();
+	//设置定时
 	 m_Timer1 = new QTimer;
 	 m_Timer1->start(100);
 	 connect(m_Timer1, SIGNAL(timeout()), this, SLOT(update11()));
 	 m_Timer1->setTimerType(Qt::PreciseTimer);
 
-
-
 	//create chartsn 
-	int max_d = 0;
-	int length_d = 0;
-	length_d = sizeof(day1) / sizeof(int);
-	qDebug("length_d:%d", length_d);
-	max_d = compute_m(day1, length_d);
-	qDebug("max_d:%d", max_d);
-	max_d = max_d + compute_m(day2, length_d);
-	qDebug("max_d:%d", max_d);
-	qDebug("%d", max_d);
-	chartView = new QChartView(createBarChartday(day1, day2, max_d));//创建一个m_valueCount列的barChart
+	int nummax = 0;
+	int arraylength = 0;
+
+	//日表
+	arraylength = sizeof(day1);
+	arraylength = arraylength / sizeof(int);
+	nummax = compute_m(day1, arraylength);
+	nummax = nummax + compute_m(day2, arraylength);
+	nummax = nummax / 10;
+	qDebug("nummax:%d", nummax);
+	chartView = new QChartView(createBarChartday(day1, day2, nummax));//创建一个m_valueCount列的barChart
 	m_ui->gridLayout->addWidget(chartView, 2, 1);  //将chartView添加到Widget的2行，0列，确定显示的位置
 	m_charts << chartView;
-
-	int max_m = 0;
-	int length_m = 0;
-	length_m = sizeof(month1) / sizeof(int);
-	qDebug("length_m:%d", length_m);
-	max_m = compute_m(month1, length_m);
-	qDebug("max_m:%d", max_m);
-	max_m = max_m + compute_m(month2, length_m);
-	qDebug("max_m:%d", max_m);
-	chartView = new QChartView(createBarChartmonth(month1, month2, max_m));//创建一个m_valueCount列的barChart
+	
+	//月表
+	arraylength = sizeof(month1);
+	arraylength = arraylength / sizeof(int);
+	nummax = compute_m(month1, arraylength);
+	nummax = nummax + compute_m(month2, arraylength);;
+	nummax = nummax / 10;
+	qDebug("nummax:%d", nummax);
+	chartView = new QChartView(createBarChartmonth(month1, month2, nummax));//创建一个m_valueCount列的barChart
 	m_ui->gridLayout->addWidget(chartView, 2, 2);  //将chartView添加到Widget的2行，0列，确定显示的位置
 	m_charts << chartView;
 
-
-
-	int max_y = 0;
-	int length_y = 0;
-	length_y = sizeof(week1) / sizeof(int);
-	qDebug("length_y:%d", length_y);
-	max_y = compute_m(week1, length_y);
-	qDebug("max_y:%d", max_y);
-	max_y = max_y + compute_m(week2, length_y);
-	qDebug("max_y:%d", max_y);
-	chartView = new QChartView(createBarChartweek(week1, week2, max_y));//创建一个m_valueCount列的barChart
+	//周表
+	arraylength = sizeof(week1);
+	arraylength = arraylength / sizeof(int);
+	//qDebug("length_y:%d", length_y);
+	nummax = compute_m(week1, arraylength);
+	qDebug("max_y:%d", nummax);
+	nummax = nummax + compute_m(week2, arraylength);
+	qDebug("max_y:%d", nummax);
+	nummax = nummax / 10;
+	qDebug("nummax:%d", nummax);
+	chartView = new QChartView(createBarChartweek(week1, week2, nummax));//创建一个m_valueCount列的barChart
 	
-	m_ui->gridLayout->addWidget(chartView, 2, 3);  //将chartView添加到Widget的2行，0列，确定显示的位置	
-	//QPushButton* nihao123 = new QPushButton("Exit");
-	//m_ui->gridLayout->addWidget(nihao123, 2, 0);	
+	//将chartView添加到Widget的2行，0列，确定显示的位置
+	m_ui->gridLayout->addWidget(chartView, 2, 3);	
 	m_charts << chartView;
 	
-
-	//chartView = new QChartView(createSplineChart());
-	//m_ui->gridLayout->addWidget(chartView, 2, 1);
-	//m_charts << chartView;
-
-	//chartView = new QChartView(createBarChart(m_valueCount));//创建一个m_valueCount列的barChart
-	//m_ui->gridLayout->addWidget(chartView, 6, 6);  //将chartView添加到Widget的2行，0列，确定显示的位置
-	//m_charts << chartView;
 }
 
 
@@ -372,7 +332,6 @@ void systime()
 	QString BeforeDay5 = time1.addDays(-4).toString("yyyy/MM/dd");//获取前一天时间
 	QString BeforeDay6 = time1.addDays(-5).toString("yyyy/MM/dd");//获取前一天时间
 	QString BeforeDay7 = time1.addDays(-6).toString("yyyy/MM/dd");//获取前一天时间
-
 
 	QByteArray ba1 = BeforeDay1.toLatin1();
 	dayt1 = ba1.data();
@@ -418,23 +377,18 @@ void systime()
 
 
 	QDateTime time2 = QDateTime::currentDateTime();//获取系统现在的时间
-		//QString str = time.toString("MM-dd"); //设置显示格式
+	//QString str = time.toString("MM-dd"); //设置显示格式
 	QString Today1 = time2.addDays(0).toString("yyyy/MM/dd/hh:mm:ss");//获取前一天时间
 	QString Today2 = time2.addDays(0).toString("yyyy/MM/dd");//获取前一天时间
-	//QString Today3 = time2.addDays(0).toString("yyyy/M");//获取前一天时间
+	
 
 	QByteArray ba8 = Today1.toLatin1();
 	systimeA = ba8.data();
-	
 	QByteArray ba9 = Today2.toLatin1();
 	systimeB = ba9.data();
 
-	//QByteArray ba10 = Today3.toLatin1();
-	//systimeC = ba10.data();
-
 	strcpy(systemBB, systimeB);
 	strcpy(systemAA, systimeA);
-
 
 	time_t t;
 	struct tm* lt;
@@ -443,10 +397,7 @@ void systime()
 	char time11[6][10] = { 0 };
 	itoa(lt->tm_year + 1900, time11[0], 10);
 	itoa(lt->tm_mon + 1, time11[1], 10);
-	
-	//strcpy(systemCC, time11[0]);
-	//strcat(systemCC, ",");
-	//strcat(systemCC, time11[1]);
+
 
 	char strtime[3][10];
 	itoa(lt->tm_year + 1900, strtime[0], 10);
@@ -469,51 +420,16 @@ void systime()
 	itoa(tempw - 2, writeweek3, 10);
 	itoa(tempw - 3, writeweek4, 10);
 
-	
-	//QByteArray ba2 = Today2.toLatin1();
-	//systimeB = ba2.data();
-	/*qDebug("systimeAB;%s", systimeAB);
-	time_t t;
-	struct tm* lt;
-	time(&t);
-	lt = localtime(&t);
-
-	char time11[6][10] = { 0 };
-	itoa(lt->tm_year + 1900, time11[0], 10);
-	itoa(lt->tm_mon + 1, time11[1], 10);
-	itoa(lt->tm_mday, time11[2], 10);
-	itoa(lt->tm_hour, time11[3], 10);
-	itoa(lt->tm_min, time11[4], 10);
-	itoa(lt->tm_sec, time11[5], 10);
-	strcat(time11[0], "/");
-	strcat(time11[0], time11[1]);
-	strcat(time11[0], "/");
-	strcat(time11[0], time11[2]);
-	strcat(systimeB, time11[0]);
-
-	strcat(time11[0], "/");
-	strcat(time11[0], time11[3]);
-	strcat(time11[0], ":");
-	strcat(time11[0], time11[4]);
-	strcat(time11[0], ":");
-	strcat(time11[0], time11[5]);*/
-
-	//strcat(systimeA, time11[0]);
 }
 void ThemeWidget::update11()
 {
 	
 
 	int label[] = {4,2,0};
-	//memset(systimeA, 0, sizeof systimeA);
-	//memset(systimeB, 0, sizeof systimeB);
 	systime();
 
 	Array_length = sizeof(label) / sizeof(label[0]);
 	Arrays(Array_length, label);
-	//readExcel(2);
-
-//	writeExcel(1, 1, systimeA);//将操作时间写入文件
 
 	if (label != NULL)
 	{
@@ -688,8 +604,7 @@ void ThemeWidget::update11()
 	
 		int x[6] = { 1,1,1,1,1 };
 		double temp;
-		static int roo = 1;
-		roo++;
+		
 		m_ui->Labelokdown1->setText("input:" + QString::number(total) + "psc");
 		m_ui->Labelokdown2->setText("Ouput:" + QString::number(oktotal) + "psc");
 		temp = total - oktotal;
@@ -700,61 +615,49 @@ void ThemeWidget::update11()
 		m_ui->Labelokdown4->setText("NG Yield:" + QString::number(temp, 'f', 2) + "%");
 		m_ui->gridLayout->SetFixedSize;
 
-		int max_d = 0;
-		int length_d = 0;
-		length_d = sizeof(day1) / sizeof(int);
-		//qDebug("length_d:%d", length_d);
-		max_d = compute_m(day1, length_d);
-		//qDebug("max_d:%d", max_d);
-		max_d = max_d + compute_m(day2, length_d);
-		//qDebug("max_d:%d", max_d);
-		//qDebug("%d", max_d);
-		max_d = max_d / 10;
-		chartView = new QChartView(createBarChartday(day1, day2, max_d*10+20));//创建一个m_valueCount列的barChart
+		int nummax = 0;
+		int arraylength = 0;
+
+		//日表
+		arraylength = sizeof(day1);
+		arraylength = arraylength / sizeof(int);
+		nummax = compute_m(day1, arraylength);
+		nummax = nummax + compute_m(day2, arraylength);
+		nummax = nummax / 10;
+		chartView = new QChartView(createBarChartday(day1, day2, nummax *10+30));//创建一个m_valueCount列的barChart
 		QChart::ChartTheme theme = static_cast<QChart::ChartTheme>(
 			m_ui->themeComboBox->itemData(m_ui->themeComboBox->currentIndex()).toInt());
 		chartView->chart()->setTheme(theme);
 		m_ui->gridLayout->addWidget(chartView, 2, 1);
 		m_charts << chartView;
-
-
-		int max_m = 0;
-		int length_m = 0;
-		length_m = sizeof(month1) / sizeof(int);
-		//qDebug("length_m:%d", length_m);
-		max_m = compute_m(month1, length_m);
-		//qDebug("max_m:%d", max_m);
-		max_m = max_m + compute_m(month2, length_m);
-		max_m = max_m / 10;
-		//qDebug("max_m:%d", max_m);
-		chartView = new QChartView(createBarChartmonth(month1, month2, max_m * 10 + 20));//创建一个m_valueCount列的barChart
+		
+		//月表
+		arraylength = sizeof(month1);
+		arraylength = arraylength / sizeof(int);
+		nummax = compute_m(month1, arraylength);
+		nummax = nummax + compute_m(month2, arraylength);
+		nummax = nummax / 10;
+		chartView = new QChartView(createBarChartmonth(month1, month2, nummax * 10 + 30));//创建一个m_valueCount列的barChart
 
 		chartView->chart()->setTheme(theme);
 		m_ui->gridLayout->addWidget(chartView, 2, 2);
 		m_charts << chartView;
 
+		//周表
+		arraylength = sizeof(week1);
+		arraylength = arraylength / sizeof(int);
+		nummax = compute_m(week1, arraylength);
+		nummax = nummax + compute_m(week2, arraylength);
+		nummax = nummax / 10;
 
-		int max_y = 0;
-		int length_y = 0;
-		length_y = sizeof(week1) / sizeof(int);
-		//qDebug("length_y:%d", length_y);
-		max_y = compute_m(week1, length_y);
-	    //qDebug("max_y:%d", max_y);
-		max_y = max_y + compute_m(week2, length_y);
-		//qDebug("max_y:%d", max_y);
-		max_y = max_y / 10;
-		chartView = new QChartView(createBarChartweek(week1, week2, max_y * 10 + 20));//创建一个m_valueCount列的barChart
+		chartView = new QChartView(createBarChartweek(week1, week2, nummax * 10 + 30));//创建一个m_valueCount列的barChart
 		//保持主题
 		chartView->chart()->setTheme(theme);
 		m_ui->gridLayout->addWidget(chartView, 2, 3);
 		m_charts << chartView;
-
-
-
-		updateUI();
+		
+		updateUI();//触发主题事件
 	}
-	
-	
 		qApp->processEvents();
 
 }
@@ -792,7 +695,7 @@ void ThemeWidget::populateLegendBox()//设置LegendBox下拉菜单的内容和效果
 }
 int ThemeWidget::compute_m(int arr[], int len) 
 {
-	int max;
+	int max=arr[0];//这句话影响很大
 	for (int i = 0; i < len; i++) {
 
 		if (max < arr[i]) {
@@ -823,7 +726,6 @@ DataTable ThemeWidget::generateRandomData(int listCount, int valueMax, int value
 	}
 	return dataTable;
 }
-
 
 QChart* ThemeWidget::createBarChartday(int x1[], int x2[],int max) const //创建BarChart函数
 {
@@ -866,15 +768,10 @@ QChart* ThemeWidget::createBarChartday(int x1[], int x2[],int max) const //创建B
 		series->attachAxis(axisX);
 
 		QValueAxis* axisY = new QValueAxis();
-		axisY->setRange(0, 1.5 * max);
+		axisY->setRange(0, max);
 		chart->addAxis(axisY, Qt::AlignLeft);//放到左边
 		series->attachAxis(axisY);
 
-	   // chart->axes(Qt::Vertical).first()->setRange(0,  1.5*max);//设置Y轴最大最小值
-	   // Add space to label to add space between labels and axis
-	   // QValueAxis* axisY = qobject_cast<QValueAxis*>(chart->axes(Qt::Vertical).first());
-	   // Q_ASSERT(axisY);
-	   // axisY->setLabelFormat("%.1f  ");
 	return chart;
 }
 
@@ -883,8 +780,6 @@ QChart* ThemeWidget::createBarChartmonth(int x1[], int x2[], int max) const //创
 	//Q_UNUSED(valueCount);
 	QChart* chart = new QChart();
 	chart->setTitle("Report for last four month");
-	//int x1[] = { 25,30,25,29,30,26 };
-	//int x2[] = { 2,3,2,2,3,2};
 	QStackedBarSeries* series = new QStackedBarSeries(chart);
 	if (1) {		
 		QBarSet* set = new QBarSet("OK");
@@ -918,15 +813,9 @@ QChart* ThemeWidget::createBarChartmonth(int x1[], int x2[], int max) const //创
 	series->attachAxis(axisX);
 	
 	QValueAxis* axisY = new QValueAxis();
-	axisY->setRange(0, 1.5 * max);
+	axisY->setRange(0,  max);
 	chart->addAxis(axisY, Qt::AlignLeft);//放到左边
 	series->attachAxis(axisY);
-
-	//chart->axes(Qt::Vertical).first()->setRange(0, 1.5 * max);//设置Y轴最大最小值
-    //Add space to label to add space between labels and axis
-	//QValueAxis* axisY = qobject_cast<QValueAxis*>(chart->axes(Qt::Vertical).first());
-	//Q_ASSERT(axisY);
-	//axisY->setLabelFormat("%.1f  ");
 
 	return chart;
 }
@@ -936,8 +825,6 @@ QChart* ThemeWidget::createBarChartweek(int x1[], int x2[],int max) const //创建
 	//Q_UNUSED(valueCount);
 	QChart* chart = new QChart();
 	chart->setTitle("Report for last five week");
-	//int x1[] = { 25,30,25,29,30,26 };
-	//int x2[] = { 2,3,2,2,3,2};
 	QStackedBarSeries* series = new QStackedBarSeries(chart);
 	if (1) {
 		QBarSet* set = new QBarSet("OK");
@@ -962,15 +849,12 @@ QChart* ThemeWidget::createBarChartweek(int x1[], int x2[],int max) const //创建
 	int year11 = atoi(strtime[0]);
 	int month11 = atoi(strtime[1]);
 	int day11 = atoi(strtime[2]);
-
-	
 	int week = CountWeek(year11, month11, day11);
 	
 	//定义字符串列表，用于X轴标签
 	//chart->createDefaultAxes();//设置XY轴为默认值
 	QStringList categories;
 	categories << "w" + QString::number(year11 % 100) + QString::number(week - 3) << "w" + QString::number(year11 % 100) + QString::number(week - 2) << "w" + QString::number(year11 % 100) + QString::number(week - 1) << "w" + QString::number(year11 % 100) + QString::number(week);
-
 	//设置X轴参数
 	QBarCategoryAxis* axisX = new QBarCategoryAxis();
 	axisX->append(categories);//设置X轴标签
@@ -979,18 +863,12 @@ QChart* ThemeWidget::createBarChartweek(int x1[], int x2[],int max) const //创建
 	series->attachAxis(axisX);
 	
 	QValueAxis* axisY = new QValueAxis();
-	axisY->setRange(0, 1.5 * max);
+	axisY->setRange(0,  max);
 	chart->addAxis(axisY, Qt::AlignLeft);//放到左边
 	series->attachAxis(axisY);
-	//chart->axes(Qt::Vertical).first()->setRange(0, 1.5 * max);//设置Y轴最大最小值
-    //Add space to label to add space between labels and axis
-	//QValueAxis* axisY = qobject_cast<QValueAxis*>(chart->axes(Qt::Vertical).first());
-	//Q_ASSERT(axisY);
-	//axisY->setLabelFormat("%.1f  ");
+
 	return chart;
 }
-
-
 
 
 QChart* ThemeWidget::createBarChart(int valueCount) const //创建BarChart函数
@@ -1021,10 +899,6 @@ QChart* ThemeWidget::createBarChart(int valueCount) const //创建BarChart函数
 
 	return chart;
 }
-
-
-
-
 QChart* ThemeWidget::createSplineChart() const//创建SplineChart()函数
 {
 	QChart* chart = new QChart();
@@ -1050,13 +924,11 @@ QChart* ThemeWidget::createSplineChart() const//创建SplineChart()函数
 	axisY->setLabelFormat("%.1f  ");
 	return chart;
 }
-
 void ThemeWidget::editlock() //锁定
 {	
 	m_ui->alsName2->setEnabled(false);
 	qDebug("nihaoaooa");
 }
-
 void ThemeWidget::editunlock() //锁定
 {
 	m_ui->alsName2->setEnabled(true);
@@ -1065,25 +937,19 @@ void ThemeWidget::editunlock() //锁定
 }
 void ThemeWidget::updateUI()  //更新UI界面函数
 {
-	//![6]
 	QChart::ChartTheme theme = static_cast<QChart::ChartTheme>(
 		m_ui->themeComboBox->itemData(m_ui->themeComboBox->currentIndex()).toInt());
-	//![6]
 	const auto charts = m_charts;
 	if (!m_charts.isEmpty() && m_charts.at(0)->chart()->theme() != theme) {
 		for (QChartView* chartView : charts) {
-			//![7]
 			chartView->chart()->setTheme(theme);
-			//![7]
 		}
 
 		// Set palette colors based on selected theme
-		//![8]
 		QPalette pal = window()->palette();
 		if (theme == QChart::ChartThemeLight) {
 			pal.setColor(QPalette::Window, QRgb(0xf0f0f0));
 			pal.setColor(QPalette::WindowText, QRgb(0x404044));
-			//![8]
 		}
 		else if (theme == QChart::ChartThemeDark) {
 			pal.setColor(QPalette::Window, QRgb(0x121218));
@@ -1117,24 +983,19 @@ void ThemeWidget::updateUI()  //更新UI界面函数
 	}
 
 	// Update antialiasing
-	//![11]
 	bool checked = m_ui->antialiasCheckBox->isChecked();
 	for (QChartView* chart : charts)
 		chart->setRenderHint(QPainter::Antialiasing, checked);
-	//![11]
 
 	// Update animation options
-	//![9]
 	QChart::AnimationOptions options(
 		m_ui->animatedComboBox->itemData(m_ui->animatedComboBox->currentIndex()).toInt());
 	if (!m_charts.isEmpty() && m_charts.at(0)->chart()->animationOptions() != options) {
 		for (QChartView* chartView : charts)
 			chartView->chart()->setAnimationOptions(options);
 	}
-	//![9]
 
 	// Update legend alignment
-	//![10]
 	Qt::Alignment alignment(
 		m_ui->legendComboBox->itemData(m_ui->legendComboBox->currentIndex()).toInt());
 
@@ -1150,8 +1011,6 @@ void ThemeWidget::updateUI()  //更新UI界面函数
 	}
 	//![10]
 }
-
-
 short ThemeWidget::Test(QString rowcolum)
 {
 	QAxObject* excel = NULL;    //本例中，excel设定为Excel文件的操作对象
@@ -1169,7 +1028,6 @@ short ThemeWidget::Test(QString rowcolum)
 	
 	// 获取第n个工作表 querySubObject("Item(int)", n);
 	QAxObject* worksheet = worksheets->querySubObject("Item(int)", 1);//本例获取第一个，最后参数填1
-
 
 	//获取该sheet的数据范围（可以理解为有数据的矩形区域
 	QAxObject* usedrange = worksheet->querySubObject("UsedRange");
@@ -1210,26 +1068,14 @@ short ThemeWidget::Test(QString rowcolum)
 	else
 		return 2;
 }
-
-//获取系统时间
-void time1()
-{
-	time_t t;
-	struct tm* lt;
-	time(&t);
-	lt = localtime(&t);
-	printf("%d/%d/%d %d:%d:%d\n", lt->tm_year + 1900, lt->tm_mon + 1, lt->tm_mday, lt->tm_hour, lt->tm_min, lt->tm_sec);//输出结果
-}
 //按行列，读取excel函数
 short readExcel(short colum)
 {
 	char str1[20];
 	char str_d[20]={0};
-	char str2[20] = { 0 };
 	char day_temp[12]={0};
 
 	char strw[20] = { 0 };
-	char strwc[20];
 
 	char month_temp[7] = {0};
 	char str_m[20];
@@ -1276,9 +1122,6 @@ short readExcel(short colum)
 			{
 				day_temp[n] = str_m[n];
 			}
-
-			//qDebug("day_temp:%s", day_temp);
-			//qDebug("dayt1s:%s", dayt1s);
 			if (strcmp(dayt7s, day_temp) == 0)
 			{
 				daysign = 1;
@@ -1310,10 +1153,7 @@ short readExcel(short colum)
 			else
 				daysign = 8;
 
-			//qDebug("daysign:%d", daysign);	
-
-			qDebug("writeweek1:%s",writeweek1);
-			qDebug("strw:%s", strw);
+			//qDebug("writeweek1:%s",writeweek1);
 			 if (strcmp(writeweek1, strw) == 0)
 			{
 				weeksign = 4;
@@ -1358,24 +1198,16 @@ short readExcel(short colum)
 			{
 				cc = fgetc(fp);
 			
-				//qDebug("str:%c", cc);
-				
 				if (cc == EOF)
 				{
 					endsign = 0;
-					//qDebug("endsign1:%d", endsign);
 					break;
 				}
 				else
 				{
-					//qDebug("endsign:%d", endsign);
 					endsign = 123;
 				}
-			
-				//qDebug("str:%c", cc);
-				//qDebug("str:%c", cc);
-				//fscanf(fp, "%s", cc);
-				//fseek(fp, 1L, SEEK_CUR);
+		
 				if (cc == 'N' || cc == 'O')
 				{
 					count++;
@@ -1395,13 +1227,7 @@ short readExcel(short colum)
 			
 		}
 
-	//	qDebug("strw:%s", strw);
-	//	qDebug("writeweek1:%s", writeweek1);
 	}
-
-	//qDebug("signc:%d", signcc);
-	//qDebug("endsign:%d", endsign);
-
 	if (signcc == 1)
 	{
 		return 1;
@@ -1415,7 +1241,7 @@ short readExcel(short colum)
 		return 2;
 	}
 }
-
+//存取数据
 void positon_Excel(short row, short colum, short xx[6])
 {
 	FILE* fpo=NULL;
@@ -1460,48 +1286,6 @@ void positon_Excel(short row, short colum, short xx[6])
 	fclose(fpo);
 
 }
-
-
-//按行列字符，写excel函数
-void writeExcel(short row, short colum ,char str[20])
-{
-	FILE* fpo = NULL;
-	FILE* fpi = NULL;
-	fpi = fopen("test1.xls", "r");
-	fpo = fopen("test2.xls", "w");
-
-
-	if (fpo != NULL)
-	{
-		for (int i = 1; i < row; i++)
-		{
-			//fputs("\t", fp);
-			fprintf(fpo, "\n");//移动到第row行
-			//printf("移动到第i行\n");
-		}
-		for (int i = 1; i < colum; i++)
-		{
-			fprintf(fpo, "\t");//移动到第colum列
-			//printf("移动到第i列\n");
-		}
-
-		fprintf(fpo, "%s\n", str);//存入数据str
-
-
-		if (fclose(fpo) != 0)
-		{
-			printf("关闭文件失败！！");
-		}
-		else { printf("关闭文件成功！！"); }
-	}
-	else
-	{
-		printf("打开文件失败！！");
-	}
-	fclose(fpi);
-	remove("test1.xls");
-	rename("test2.xls", "test1.xls");
-}
 //动态数组
 void Arrays(int num, int label[])
 {
@@ -1515,37 +1299,6 @@ void Arrays(int num, int label[])
 	}
 }
 //返回系统时间
-void systime11() {
-	time_t t;
-	struct tm* lt;
-	time(&t);
-	lt = localtime(&t);
-
-	char time11[6][10] = { 0 };
-	itoa(lt->tm_year + 1900, time11[0], 10);
-	itoa(lt->tm_mon + 1, time11[1], 10);
-	itoa(lt->tm_mday, time11[2], 10);
-	itoa(lt->tm_hour, time11[3], 10);
-	itoa(lt->tm_min, time11[4], 10);
-	itoa(lt->tm_sec, time11[5], 10);
-	strcat(time11[0], "/");
-	strcat(time11[0], time11[1]);
-	strcat(time11[0], "/");
-	strcat(time11[0], time11[2]);
-	strcat(systimeB, time11[0]);
-	qDebug("systimeB:%s", systimeB);
-	strcat(time11[0], "/");
-	strcat(time11[0], time11[3]);
-	strcat(time11[0], ":");
-	strcat(time11[0], time11[4]);
-	strcat(time11[0], ":");
-	strcat(time11[0], time11[5]);
-
-	strcat(systimeA, time11[0]);
-
-}
-
-
 int CountDay(int year, int month, int day)
 {
 	int x = day;
@@ -1557,7 +1310,6 @@ int CountDay(int year, int month, int day)
 	}
 	return x;
 }
-
 int CountWeek(int year, int month, int day)
 {
 	int x;
